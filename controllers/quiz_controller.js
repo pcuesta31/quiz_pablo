@@ -37,6 +37,11 @@ exports.ownershipRequired = function(req, res, next){
 exports.index = function(req, res, next) {
 	models.Quiz.findAll()
 		.then(function(quizzes) {
+			var format = req.params.format;
+			if (format == "json"){
+				res.render('quizzes/indexjson.ejs', { quizzes: quizzes, layout: false});
+			}
+			else{
 			res.render('quizzes/index.ejs', { quizzes: quizzes});
 		})
 		.catch(function(error) {
@@ -49,9 +54,12 @@ exports.index = function(req, res, next) {
 exports.show = function(req, res, next) {
 
 	var answer = req.query.answer || '';
+	var format = req.params.format;
+	if (format == "json"){
 
-	res.render('quizzes/show', {quiz: req.quiz,
+		res.render('quizzes/show', {quiz: req.quiz,
 								answer: answer});
+	};
 };
 
 
@@ -59,7 +67,8 @@ exports.show = function(req, res, next) {
 exports.check = function(req, res, next) {
 
 	var answer = req.query.answer || "";
-
+	
+	
 	var result = answer === req.quiz.answer ? 'Correcta' : 'Incorrecta';
 
 	res.render('quizzes/result', { quiz: req.quiz, 
